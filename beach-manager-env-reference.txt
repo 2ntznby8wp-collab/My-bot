@@ -1,0 +1,81 @@
+════════════════════════════════════════════════════════════
+  BeachManager — Справка по переменным окружения
+  Дата экспорта: 2026-06-17
+════════════════════════════════════════════════════════════
+
+ВАЖНО: Реальные значения секретов хранятся в Replit Secrets
+(вкладка "Secrets" в боковой панели проекта).
+Этот файл содержит ТОЛЬКО названия переменных и их назначение.
+
+────────────────────────────────────────────────────────────
+СЕКРЕТЫ (Replit Secrets — зашифрованы, не отображаются)
+────────────────────────────────────────────────────────────
+
+TELEGRAM_BOT_TOKEN
+  Назначение : Токен Telegram Bot API
+  Где получить: @BotFather в Telegram → /mybots → выбрать бот → API Token
+  Используется: beach-manager/bot/main.py, beach-manager/start_prod.sh
+
+SESSION_SECRET
+  Назначение : Секретный ключ для Flask-сессий (admin panel)
+  Где получить: Сгенерировать случайную строку, например:
+                python3 -c "import secrets; print(secrets.token_hex(32))"
+  Используется: beach-manager/admin/app.py
+
+────────────────────────────────────────────────────────────
+ОБЩИЕ ПЕРЕМЕННЫЕ (userenv.shared в .replit)
+────────────────────────────────────────────────────────────
+
+OWNER_TELEGRAM_ID = 851933268
+  Назначение : Telegram ID владельца — автоматически получает права admin
+  Где получить: Отправить /whoami боту после регистрации
+  Используется: beach-manager/bot/main.py (promote_owner_on_startup)
+
+────────────────────────────────────────────────────────────
+ПРОЧИЕ ПАРАМЕТРЫ (без секретов)
+────────────────────────────────────────────────────────────
+
+ADMIN_PASSWORD
+  Назначение : Пароль входа в web admin panel
+  Значение по умолчанию: beach2024
+  Как изменить: Установить как Replit Secret с ключом ADMIN_PASSWORD
+  Используется: beach-manager/admin/app.py
+
+PORT (автоматически)
+  Назначение : Порт Flask admin panel
+  Значение по умолчанию: 24230 (dev), задаётся Replit при deployment
+  Используется: запуск через воркфлоу / start_prod.sh
+
+════════════════════════════════════════════════════════════
+КАК ВОССТАНОВИТЬ ПРОЕКТ НА НОВОМ REPLIT
+════════════════════════════════════════════════════════════
+
+1. Создать новый Repl (Python)
+2. Загрузить содержимое beach-manager-export.zip
+3. В Replit Secrets добавить:
+   - TELEGRAM_BOT_TOKEN  = <значение из старого проекта>
+   - SESSION_SECRET      = <новое случайное значение>
+   - OWNER_TELEGRAM_ID   = 851933268
+4. Установить зависимости:
+   pip install flask python-telegram-bot==22.* requests
+5. Инициализировать БД (или загрузить beach_manager.db из резервной копии)
+6. Запустить bot: python beach-manager/bot/main.py
+7. Запустить admin: python beach-manager/admin/app.py
+
+════════════════════════════════════════════════════════════
+СТРУКТУРА БАЗЫ ДАННЫХ (SQLite)
+════════════════════════════════════════════════════════════
+
+Файл: beach-manager/beach_manager.db
+
+Таблицы:
+  employees    — сотрудники (id, name, telegram_id, is_bot_admin, ...)
+  tasks        — задания (id, title, assigned_to, status, priority, ...)
+  task_reports — отчёты сотрудников с фото
+  schedules    — расписание смен (employee_id, date, shift_start, shift_end)
+  income       — доходы (amount, category, date, description)
+  expenses     — расходы (amount, category, date, description)
+  notifications— очередь уведомлений (employee_id, message, is_read)
+  exchanges    — заявки на обмен сменами
+
+════════════════════════════════════════════════════════════
